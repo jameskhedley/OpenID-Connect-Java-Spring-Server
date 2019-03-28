@@ -86,15 +86,6 @@ public class TestBlacklistAwareRedirectResolver {
 		String res1 = resolver.resolveRedirect(goodUri, client);
 
 		assertThat(res1, is(equalTo(goodUri)));
-		
-		// set the resolver to non-strict and test the path-based redirect resolution
-		
-		resolver.setStrictMatch(false);
-
-		String res2 = resolver.resolveRedirect(pathUri, client);
-
-		assertThat(res2, is(equalTo(pathUri)));
-
 
 	}
 
@@ -126,11 +117,12 @@ public class TestBlacklistAwareRedirectResolver {
 
 		// set the resolver to non-strict match mode
 		resolver.setStrictMatch(false);
-		
-		// this is not an exact match (but that's OK)
+
+		// this is not an exact match, and that's not longer accepted
+		// Spring oauth2 implementation matches strict as well beacuse of CVE-2019-3778
 		boolean res1 = resolver.redirectMatches(pathUri, goodUri);
 
-		assertThat(res1, is(true));
+		assertThat(res1, is(false));
 
 		// this is an exact match
 		boolean res2 = resolver.redirectMatches(goodUri, goodUri);
